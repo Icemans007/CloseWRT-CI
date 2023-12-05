@@ -11,14 +11,17 @@ sed -i "s/timezone='.*'/timezone='CST-8'/g" ./package/base-files/files/bin/confi
 sed -i "/timezone='.*'/a\\\t\t\set system.@system[-1].zonename='Asia/Shanghai'" ./package/base-files/files/bin/config_generate
 #修改默认WIFI名
 sed -i "23s/ssid=\".*\"/ssid=\"$WRT_WIFI\"/" ./package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
-sed -i "29s/ssid=\".*\"/ssid=\"$WRT_WIFI-5G\"/" ./package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
+sed -i "29s/ssid=\".*\"/ssid=\"${WRT_WIFI}_5G\"/" ./package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
 
 #配置文件修改
 echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
 echo "CONFIG_PACKAGE_luci-app-$WRT_THEME-config=y" >> ./.config
 
-if [[ $WRT_URL == *"immortalwrt"* ]] ; then
+if [[ $WRT_URL == *"lede"* ]]; then
+	echo "CONFIG_PACKAGE_luci-app-ssr-plus=y" >> ./.config
+	echo "CONFIG_PACKAGE_luci-app-openclash=y" >> ./.config
+elif [[ $WRT_URL == *"immortalwrt"* ]] ; then
 	echo "CONFIG_PACKAGE_luci=y" >> ./.config
 	echo "CONFIG_LUCI_LANG_zh_Hans=y" >> ./.config
-	sed -i "s/CONFIG_PACKAGE_luci-app-openclash=y/CONFIG_PACKAGE_luci-app-openclash=n/g" ./.config
+	echo "CONFIG_PACKAGE_luci-app-homeproxy=y" >> ./.config
 fi
